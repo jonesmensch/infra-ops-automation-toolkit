@@ -1,0 +1,8 @@
+services:
+  app:
+    build:
+      context: ./app
+    container_name: infraops_app
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
