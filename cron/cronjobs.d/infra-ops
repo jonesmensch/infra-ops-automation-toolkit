@@ -1,0 +1,13 @@
+# /etc/cron.d/infra-ops
+SHELL=/bin/bash
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+MAILTO=""
+
+# Disk check a cada 30 minutos
+*/30 * * * * root /opt/infra-ops/scripts/health/disk_usage_check.sh
+
+# Limpeza de backups diária (02:30) - backups gerais
+30 2 * * * root /opt/infra-ops/scripts/maintenance/cleanup_backups.sh
+
+# Backup Postgres diário (03:00) - mantém 7 dias por padrão
+0 3 * * * root /opt/infra-ops/scripts/backup/backup_postgres.sh

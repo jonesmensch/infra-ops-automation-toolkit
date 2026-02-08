@@ -1,0 +1,29 @@
+services:
+  app:
+    build:
+      context: ./app
+    container_name: infraops_app
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: infraops_postgres
+    environment:
+      POSTGRES_DB: infraops
+      POSTGRES_USER: infraops
+      POSTGRES_PASSWORD: infraops
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U infraops -d infraops"]
+      interval: 10s
+      timeout: 3s
+      retries: 10
+    restart: unless-stopped
+
+volumes:
+  pgdata:
