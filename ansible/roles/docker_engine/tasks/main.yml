@@ -1,0 +1,21 @@
+- name: Check docker CLI exists
+  command: docker --version
+  register: docker_version
+  changed_when: false
+
+- name: Ensure docker service is enabled and running
+  service:
+    name: docker
+    state: started
+    enabled: true
+
+- name: Check docker compose plugin exists
+  command: docker compose version
+  register: compose_version
+  changed_when: false
+
+- name: Add ubuntu user to docker group
+  user:
+    name: ubuntu
+    groups: docker
+    append: true
