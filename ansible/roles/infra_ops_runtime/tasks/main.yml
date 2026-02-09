@@ -1,0 +1,40 @@
+- name: Sync scripts to runtime
+  synchronize:
+    src: "{{ repo_root }}/scripts/"
+    dest: "{{ runtime_scripts }}/"
+    delete: true
+  delegate_to: localhost
+
+- name: Set ownership for runtime scripts to root
+  file:
+    path: "{{ runtime_scripts }}"
+    owner: root
+    group: root
+    recurse: true
+
+- name: Ensure *.sh scripts are executable
+  shell: |
+    find "{{ runtime_scripts }}" -type f -name "*.sh" -exec chmod 0755 {} \;
+  args:
+    executable: /bin/bash
+
+- name: Install cron file into /etc/cron.d
+  copy:
+    src: "{{ repo_root }}/cron/cronjobs.d/infra-ops"
+    dest: "/etc/cron.d/infra-ops"
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Restart cron
+  service:
+    name: cron
+    state: restarted
+
+- name: Install logrotate config into /etc/logrotate.d
+  copy:
+    src: "{{ repo_root }}/logrotate/infra-ops.conf"
+    dest: "/etc/logrotate.d/infra-ops"
+    owner: root
+    group: root
+    mode: "0644"

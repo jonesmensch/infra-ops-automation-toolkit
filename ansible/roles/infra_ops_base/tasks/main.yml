@@ -1,0 +1,21 @@
+- name: Ensure base runtime directories exist
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: "0755"
+  loop:
+    - "{{ runtime_root }}"
+    - "{{ runtime_root }}/logs"
+    - "{{ runtime_root }}/backups"
+    - "{{ runtime_root }}/backups/postgres"
+    - "{{ runtime_root }}/scripts"
+    - "{{ runtime_root }}/app"
+    - "{{ runtime_root }}/app/docker"
+
+- name: Ensure ubuntu owns runtime root (except scripts will be root later)
+  file:
+    path: "{{ runtime_root }}"
+    state: directory
+    owner: ubuntu
+    group: ubuntu
+    recurse: true

@@ -1,0 +1,15 @@
+- name: Provision infra-ops toolkit (local)
+  hosts: local
+  become: true
+
+  vars:
+    repo_root: "/opt/infra-ops-automation-toolkit"
+    runtime_root: "/opt/infra-ops"
+    runtime_scripts: "/opt/infra-ops/scripts"
+    runtime_app: "/opt/infra-ops/app/docker"
+
+  roles:
+    - role: infra_ops_base
+    - role: docker_engine
+    - role: infra_ops_runtime
+    - role: docker_compose_runtime

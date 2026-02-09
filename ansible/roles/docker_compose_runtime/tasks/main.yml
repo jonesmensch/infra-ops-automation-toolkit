@@ -1,0 +1,21 @@
+- name: Sync docker runtime directory
+  synchronize:
+    src: "{{ repo_root }}/docker/"
+    dest: "{{ runtime_app }}/"
+    delete: true
+  delegate_to: localhost
+
+- name: Ensure ubuntu owns runtime docker directory
+  file:
+    path: "{{ runtime_root }}/app"
+    state: directory
+    owner: ubuntu
+    group: ubuntu
+    recurse: true
+
+- name: Compose up (build and run)
+  shell: |
+    docker compose up -d --build
+  args:
+    chdir: "{{ runtime_app }}"
+    executable: /bin/bash
